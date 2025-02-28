@@ -1,6 +1,6 @@
 import React from 'react'
 import Mobiles from '../Pages/Mobiles'
-import Ac from '../Pages/ac'
+import Ac from '../Pages/Ac'
 import Computer from '../Pages/Computer'
 import Fridge from '../Pages/Fridge'
 import Furniture from '../Pages/Furniture'
