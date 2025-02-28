@@ -1,5 +1,8 @@
 import React from 'react'
-// import { ShoppingCart } from 'lucide-react';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+
 import { Link } from 'react-router-dom';
 
 
@@ -11,7 +14,10 @@ const Navbar = () => {
       <div className="mylogo">
 
       <img src="https://cdn.dribbble.com/users/13443688/screenshots/19703287/02.png" alt="" />
-        <div className="title">Emart</div>
+      <div className="title">
+          <span className="no-underline">E-mart</span>
+      </div>
+
         
       </div>
       </Link>
@@ -26,7 +32,7 @@ const Navbar = () => {
         </div>
 
         <div className="cart">
-        {/* <ShoppingCart /> */}
+        <FontAwesomeIcon icon={faShoppingCart} size="2x" className='carticon'/>
         <p>Cart</p>
         </div>
     </div>

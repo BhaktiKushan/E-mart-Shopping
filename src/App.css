@@ -24,25 +24,49 @@
 }
 .mylogo{
     display: flex;
+    margin-left: -20px;
 }
 
-.title{
+.title {
     font-size: 1.5rem;
     font-weight: 700;
     color: white;
     margin-top: 30px;
+    padding-right: 5px;
 }
 
+.no-underline {
+    text-decoration: none;
+    display: inline-block;
+}
+
+
 .navsearch input{
-    width: 250px;
+    width: 180px;
     height: 20px;
     padding: 5px;
+}
+
+.signin p{
+    padding-left: 10px;
 }
 
 .cart{
     display: flex;
     gap: 5px;
 }
+
+.carticon{
+    font-size: 20px;
+    padding-left: 10px;
+}
+
+.cart p{
+    margin-right: 20px;
+}
+
+
+
 
 /* Submenu */
 .submenu{
@@ -56,11 +80,14 @@
     padding: 10px 0;
     gap: 10px;
     list-style: none;
+    
 }
 
 .submenu ul li{
     color: white;
+    display: inline-block;
 }
+
 
 
 
