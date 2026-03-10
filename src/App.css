@@ -833,3 +833,102 @@ img{
     .auth-card{ padding: 20px; border-radius: 14px; }
     .auth-card h2{ font-size: 1.45rem; }
 }
+
+/* Navbar position + look fixes across all devices */
+.navsection{
+    display: grid;
+    grid-template-columns: auto minmax(240px, 1fr) auto auto;
+    gap: 14px;
+    align-items: center;
+}
+
+.navsection > .no-underline{
+    min-width: 160px;
+}
+
+.mylogo{
+    align-items: center;
+    margin-left: 0;
+}
+
+.navsection img{
+    width: 72px;
+    margin-bottom: 0;
+}
+
+.title{
+    margin-top: 0;
+    line-height: 1;
+}
+
+.navsearch{
+    width: 100%;
+}
+
+.navsearch input{
+    width: 100%;
+    min-width: 180px;
+}
+
+.signin{
+    justify-self: end;
+    white-space: nowrap;
+}
+
+.signin p{
+    padding-left: 0;
+}
+
+.cart{
+    justify-self: end;
+    gap: 8px;
+}
+
+@media (max-width: 1024px){
+    .navsection{
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            'logo cart'
+            'search search'
+            'signin signin';
+        height: auto;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .navsection > .no-underline{ grid-area: logo; }
+    .cart{ grid-area: cart; }
+    .navsearch{ grid-area: search; }
+    .signin{ 
+        grid-area: signin;
+        justify-self: start;
+    }
+}
+
+@media (max-width: 640px){
+    .navsection{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'logo'
+            'search'
+            'signin'
+            'cart';
+    }
+
+    .signin,
+    .cart{
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .title{
+        font-size: 1rem;
+    }
+
+    .submenu ul{
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 12px;
+    }
+}
