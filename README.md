@@ -1,6 +1,6 @@
-# E-mart Shopping (React + MongoDB)
+# E-mart Shopping (React + MongoDB Atlas)
 
-E-mart now includes a MongoDB-backed backend for authentication and cart persistence.
+E-mart includes a MongoDB-backed backend for authentication and cart persistence.
 
 ## 1) Install
 
@@ -10,11 +10,23 @@ npm install
 
 ## 2) Environment
 
-Copy `.env.example` to `.env` and set values as needed.
+Copy `.env.example` to `.env` and configure MongoDB.
 
 ```bash
 cp .env.example .env
 ```
+
+### Atlas setup for your new E-mart account
+Based on your Atlas screenshots:
+- Project name: `e-mart`
+- DB username: `e-Mart`
+- Cluster host: `cluster0.h4xhkeu.mongodb.net`
+
+Set either:
+- `MONGODB_URI` (full connection string from Atlas), **or**
+- split vars: `MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_CLUSTER`, `MONGODB_DB_NAME`
+
+> Important: never commit your real database password to git.
 
 ## 3) Run full app (frontend + backend)
 
@@ -56,4 +68,5 @@ npm run build
 ## Deploy notes
 
 - `vercel.json` and `netlify.toml` are included for SPA routing.
-- Deploy frontend to Vercel/Netlify and backend separately (e.g., Render/Railway) with `MONGODB_URI` configured.
+- Deploy frontend to Vercel/Netlify and backend separately (Render/Railway/Fly).
+- Set backend environment variables (`MONGODB_URI` or split Mongo vars) and frontend `VITE_API_URL` to your deployed API URL.
