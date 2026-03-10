@@ -7,7 +7,7 @@ const Landingpage = () => {
     <div className='wallpaper'>
 
         <Navbar/>
-        <img src="/assets/banner1.jpg" style={{width:'100%'}}/>
+        <img src="/assets/banner1.jpg" className="hero-banner" alt="Shopping banner" />
         <Products/>
         
     </div>
