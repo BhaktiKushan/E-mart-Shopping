@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Navbar from '../Components/Navbar'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 
 const Auth = () => {
@@ -30,22 +29,49 @@ const Auth = () => {
   }
 
   return (
-    <>
-      <Navbar />
-      <div className='auth-page'>
-        <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
-        <form className='payment-form' onSubmit={submit}>
-          {!isLogin && <input placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} required />}
-          <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required />
+    <div className='auth-shell'>
+      <div className='auth-card'>
+        <h2>{isLogin ? 'Welcome Back' : 'Create Your Account'}</h2>
+        <p className='auth-subtext'>
+          {isLogin
+            ? 'Login to continue your shopping journey.'
+            : 'Sign up to save cart items and checkout faster.'}
+        </p>
+
+        <form className='auth-form' onSubmit={submit}>
+          {!isLogin && (
+            <input
+              placeholder='Full Name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          )}
+          <input
+            type='email'
+            placeholder='Email Address'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type='password'
+            placeholder='Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           {error && <p className='error-text'>{error}</p>}
           <button type='submit'>{isLogin ? 'Login' : 'Create Account'}</button>
         </form>
-        <button onClick={() => setIsLogin(!isLogin)}>
+
+        <button className='auth-toggle' onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? 'Need an account? Sign up' : 'Already have an account? Login'}
         </button>
+
+        <Link to='/' className='auth-home-link'>← Back to Home</Link>
       </div>
-    </>
+    </div>
   )
 }
 
