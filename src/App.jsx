@@ -24,6 +24,10 @@ import Ackey from './Singles/Ackey'
 import Speakerkey from './Singles/Speakerkey'
 import Tvkey from './Singles/Tvkey'
 import Watchkey from './Singles/Watchkey'
+import Payment from './Pages/Payment'
+import SearchResults from './Pages/SearchResults'
+import Cart from './Pages/Cart'
+import Auth from './Pages/Auth'
 
 
 function App() {
@@ -56,6 +60,10 @@ function App() {
         <Route path='/speaker/:id' element={<Speakerkey/>}/>
         <Route path='/tv/:id' element={<Tvkey/>}/>
         <Route path='/watch/:id' element={<Watchkey/>}/>
+        <Route path='/payment' element={<Payment/>}/>
+        <Route path='/search' element={<SearchResults/>}/>
+        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/auth' element={<Auth/>}/>
 
 
       </Routes>
