@@ -16,17 +16,18 @@ Copy `.env.example` to `.env` and configure MongoDB.
 cp .env.example .env
 ```
 
-### Atlas setup for your new E-mart account
-Based on your Atlas screenshots:
-- Project name: `e-mart`
-- DB username: `e-Mart`
+### Atlas setup (your current details)
+From your provided Atlas screenshots/details:
+- Connection template: `mongodb+srv://Emart123:<db_password>@cluster0.h4xhkeu.mongodb.net/?appName=Cluster0`
+- DB username: `Emart123`
 - Cluster host: `cluster0.h4xhkeu.mongodb.net`
 
-Set either:
-- `MONGODB_URI` (full connection string from Atlas), **or**
-- split vars: `MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_CLUSTER`, `MONGODB_DB_NAME`
+In `.env`, set:
+- `MONGODB_URI=mongodb+srv://Emart123:<your_real_password>@cluster0.h4xhkeu.mongodb.net/?appName=Cluster0`
 
-> Important: never commit your real database password to git.
+> Important: keep `<your_real_password>` secret and never commit it to git.
+
+You can also use split vars (`MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_CLUSTER`, `MONGODB_DB_NAME`) if preferred.
 
 ## 3) Run full app (frontend + backend)
 
