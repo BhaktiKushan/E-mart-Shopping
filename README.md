@@ -56,6 +56,18 @@ npm run server
 npm run build
 ```
 
+
+### Why users were not showing in Atlas
+If `VITE_API_URL` points to the wrong backend (or backend is not running), signup/login cannot reach the API and MongoDB will not receive records.
+
+To verify backend is reachable:
+```bash
+curl http://localhost:5000/api/health
+```
+Expected: `{"ok":true}`
+
+After signup and adding cart items, check Atlas Data Explorer in database `emart` (collections: `users`, `carts`).
+
 ## MongoDB-backed APIs
 
 - `POST /api/auth/signup`

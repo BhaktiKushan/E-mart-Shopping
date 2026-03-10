@@ -21,6 +21,14 @@ const toCartItem = (product) => ({
   quantity: 1,
 })
 
+const parseResponse = async (response) => {
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.message || 'Request failed')
+  }
+  return data
+}
+
 export const StoreProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => parseLocal(cartKey, []))
   const [currentUser, setCurrentUser] = useState(() => parseLocal(userKey, null))
@@ -39,7 +47,11 @@ export const StoreProvider = ({ children }) => {
     const item = toCartItem(product)
     const existing = cartItems.find((cartItem) => cartItem.key === item.key)
     if (existing) {
-      persistCart(cartItems.map((cartItem) => (cartItem.key === item.key ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem)))
+      persistCart(
+        cartItems.map((cartItem) =>
+          cartItem.key === item.key ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem,
+        ),
+      )
       return
     }
     persistCart([...cartItems, item])
@@ -48,7 +60,7 @@ export const StoreProvider = ({ children }) => {
   const addToCart = async (product) => {
     if (!currentUser?.id) {
       addToCartLocal(product)
-      return
+      return { ok: true }
     }
 
     try {
@@ -57,10 +69,11 @@ export const StoreProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product }),
       })
-      const data = await response.json()
+      const data = await parseResponse(response)
       persistCart(data.items || [])
-    } catch {
-      addToCartLocal(product)
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, message: error.message || 'Unable to add cart item on server.' }
     }
   }
 
@@ -71,39 +84,55 @@ export const StoreProvider = ({ children }) => {
       } else {
         persistCart(cartItems.map((item) => (item.key === key ? { ...item, quantity } : item)))
       }
-      return
+      return { ok: true }
     }
 
-    const response = await fetch(`${apiBase}/cart/${currentUser.id}/quantity`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, quantity }),
-    })
-    const data = await response.json()
-    persistCart(data.items || [])
+    try {
+      const response = await fetch(`${apiBase}/cart/${currentUser.id}/quantity`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, quantity }),
+      })
+      const data = await parseResponse(response)
+      persistCart(data.items || [])
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, message: error.message || 'Unable to update cart on server.' }
+    }
   }
 
   const removeFromCart = async (key) => {
     if (!currentUser?.id) {
       persistCart(cartItems.filter((item) => item.key !== key))
-      return
+      return { ok: true }
     }
 
-    const response = await fetch(`${apiBase}/cart/${currentUser.id}/item/${encodeURIComponent(key)}`, {
-      method: 'DELETE',
-    })
-    const data = await response.json()
-    persistCart(data.items || [])
+    try {
+      const response = await fetch(`${apiBase}/cart/${currentUser.id}/item/${encodeURIComponent(key)}`, {
+        method: 'DELETE',
+      })
+      const data = await parseResponse(response)
+      persistCart(data.items || [])
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, message: error.message || 'Unable to remove cart item on server.' }
+    }
   }
 
   const clearCart = async () => {
     if (!currentUser?.id) {
       persistCart([])
-      return
+      return { ok: true }
     }
 
-    await fetch(`${apiBase}/cart/${currentUser.id}/clear`, { method: 'DELETE' })
-    persistCart([])
+    try {
+      const response = await fetch(`${apiBase}/cart/${currentUser.id}/clear`, { method: 'DELETE' })
+      await parseResponse(response)
+      persistCart([])
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, message: error.message || 'Unable to clear cart on server.' }
+    }
   }
 
   const signIn = async ({ name, email, password }) => {
@@ -113,14 +142,14 @@ export const StoreProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       })
-      const data = await response.json()
-      if (!response.ok) return { ok: false, message: data.message || 'Signup failed.' }
+      const data = await parseResponse(response)
       persistUser(data.user)
       return { ok: true }
-    } catch {
-      const user = { id: `local-${Date.now()}`, name, email, password }
-      persistUser(user)
-      return { ok: true }
+    } catch (error) {
+      return {
+        ok: false,
+        message: error.message || 'Signup failed. Check backend URL and MongoDB connection.',
+      }
     }
   }
 
@@ -131,17 +160,14 @@ export const StoreProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
-      const data = await response.json()
-      if (!response.ok) return { ok: false, message: data.message || 'Invalid credentials.' }
+      const data = await parseResponse(response)
       persistUser(data.user)
       return { ok: true }
-    } catch {
-      const savedUser = parseLocal(userKey, null)
-      if (!savedUser || savedUser.email !== email || savedUser.password !== password) {
-        return { ok: false, message: 'Invalid credentials.' }
+    } catch (error) {
+      return {
+        ok: false,
+        message: error.message || 'Login failed. Check backend URL and MongoDB connection.',
       }
-      setCurrentUser(savedUser)
-      return { ok: true }
     }
   }
 
@@ -151,22 +177,33 @@ export const StoreProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    // remove pre-Mongo local users that do not have persistent DB id
+    if (currentUser && !currentUser.id) {
+      localStorage.removeItem(userKey)
+      setCurrentUser(null)
+    }
+  }, [currentUser])
+
+  useEffect(() => {
     if (!currentUser?.id) return
 
     const syncCart = async () => {
       try {
         const response = await fetch(`${apiBase}/cart/${currentUser.id}`)
-        const data = await response.json()
+        const data = await parseResponse(response)
         persistCart(data.items || [])
       } catch {
-        // keep local cache if api unavailable
+        // keep current cart UI, but do not fake a successful sync
       }
     }
 
     syncCart()
   }, [currentUser?.id])
 
-  const cartCount = useMemo(() => cartItems.reduce((sum, item) => sum + item.quantity, 0), [cartItems])
+  const cartCount = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems],
+  )
 
   const cartTotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0),

@@ -29,6 +29,7 @@ const getMongoUri = () => {
 }
 
 const MONGODB_URI = getMongoUri()
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'emart'
 
 app.use(cors())
 app.use(express.json())
@@ -41,9 +42,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/cart', cartRoutes)
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, { dbName: MONGODB_DB_NAME })
   .then(() => {
-    console.log('MongoDB connected')
+    console.log(`MongoDB connected (db: ${MONGODB_DB_NAME})`)
     app.listen(PORT, () => {
       console.log(`API server running on http://localhost:${PORT}`)
     })
