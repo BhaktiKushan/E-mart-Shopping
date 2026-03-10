@@ -1,15 +1,17 @@
-import React from 'react'
 import { mobileData } from '../../data/mobiles'
 import Navbar from '../Components/Navbar'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { useStore } from '../context/StoreContext'
 
 const MobilesKey = () => {
 
   const {id} = useParams()
+  const { addToCart } = useStore()
   // console.log(id);
   const product = mobileData.find((item)=> item.id === id)
   
-  
+
+  const productWithMeta = { ...product, type: product.product.toLowerCase() }
 
   return (
     <>
@@ -33,7 +35,8 @@ const MobilesKey = () => {
         </div>
 
         <div className="item1-cart">
-          <button>Add to Cart</button>
+          <button onClick={() => addToCart(productWithMeta)}>Add to Cart</button>
+          <Link to="/payment" state={{ product: productWithMeta }}><button>Buy Now</button></Link>
         </div>
 
       </div>

@@ -1,14 +1,16 @@
-import React from 'react'
 import { fridgeData } from '../../data/fridge'
 import Navbar from '../Components/Navbar'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { useStore } from '../context/StoreContext'
 
 const Fridgekey = () => {
 
   const {id} = useParams()
+  const { addToCart } = useStore()
   // console.log(id);
   const product = fridgeData.find((item)=> item.id === id)
-  
+
+  const productWithMeta = { ...product, type: product.product.toLowerCase() }
 
   return (
     <>
@@ -32,7 +34,8 @@ const Fridgekey = () => {
         </div>
 
         <div className="item1-cart">
-          <button>Add to Cart</button>
+          <button onClick={() => addToCart(productWithMeta)}>Add to Cart</button>
+          <Link to="/payment" state={{ product: productWithMeta }}><button>Buy Now</button></Link>
         </div>
 
       </div>
