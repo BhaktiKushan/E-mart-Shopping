@@ -1,51 +1,59 @@
-# E-mart Shopping
+# E-mart Shopping (React + MongoDB)
 
-A React + Vite shopping UI with category browsing, product detail pages, search, cart, auth, and payment flow.
+E-mart now includes a MongoDB-backed backend for authentication and cart persistence.
 
-## Local development
+## 1) Install
 
 ```bash
 npm install
+```
+
+## 2) Environment
+
+Copy `.env.example` to `.env` and set values as needed.
+
+```bash
+cp .env.example .env
+```
+
+## 3) Run full app (frontend + backend)
+
+```bash
+npm run dev:full
+```
+
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5000/api`
+
+## 4) Frontend only
+
+```bash
 npm run dev
 ```
 
-## Production build
+## 5) Backend only
+
+```bash
+npm run server
+```
+
+## Build
 
 ```bash
 npm run build
-npm run preview
 ```
 
----
+## MongoDB-backed APIs
 
-## Deploy (Vercel)
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `GET /api/cart/:userId`
+- `POST /api/cart/:userId/add`
+- `PATCH /api/cart/:userId/quantity`
+- `DELETE /api/cart/:userId/item/:key`
+- `DELETE /api/cart/:userId/clear`
 
-This repo now includes `vercel.json` with SPA rewrite support so deep links like `/mobiles/1`, `/cart`, `/search`, etc. work in production.
+## Deploy notes
 
-### Steps
-1. Push this repo to GitHub.
-2. Import the repository in Vercel.
-3. Use defaults:
-   - **Build command:** `npm run build`
-   - **Output directory:** `dist`
-4. Deploy.
-
----
-
-## Deploy (Netlify)
-
-This repo now includes `netlify.toml` with SPA redirect support.
-
-### Steps
-1. Push this repo to GitHub.
-2. Import the repository in Netlify.
-3. Build settings:
-   - **Build command:** `npm run build`
-   - **Publish directory:** `dist`
-4. Deploy.
-
----
-
-## Why rewrite/redirect is required
-
-This is a React Router SPA. On direct refresh of nested routes (for example `/speaker/2`), hosting must return `index.html` so the client router can resolve the route.
+- `vercel.json` and `netlify.toml` are included for SPA routing.
+- Deploy frontend to Vercel/Netlify and backend separately (e.g., Render/Railway) with `MONGODB_URI` configured.

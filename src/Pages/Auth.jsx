@@ -11,18 +11,22 @@ const Auth = () => {
   const { signIn, login } = useStore()
   const navigate = useNavigate()
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     setError('')
 
     if (isLogin) {
-      const ok = login({ email, password })
-      if (!ok) {
-        setError('Invalid credentials. Please sign up first or check details.')
+      const result = await login({ email, password })
+      if (!result.ok) {
+        setError(result.message || 'Invalid credentials. Please sign up first or check details.')
         return
       }
     } else {
-      signIn({ name: name || 'User', email, password })
+      const result = await signIn({ name: name || 'User', email, password })
+      if (!result.ok) {
+        setError(result.message || 'Unable to create account.')
+        return
+      }
     }
 
     navigate('/')
