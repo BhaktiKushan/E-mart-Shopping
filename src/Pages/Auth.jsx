@@ -8,7 +8,7 @@ const Auth = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { signIn, login } = useStore()
+  const { signIn, login, apiBase } = useStore()
   const navigate = useNavigate()
 
   const submit = async (e) => {
@@ -41,6 +41,7 @@ const Auth = () => {
             ? 'Login to continue your shopping journey.'
             : 'Sign up to save cart items and checkout faster.'}
         </p>
+        <p className='auth-api-hint'>API: {apiBase}</p>
 
         <form className='auth-form' onSubmit={submit}>
           {!isLogin && (

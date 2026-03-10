@@ -29,6 +29,14 @@ const parseResponse = async (response) => {
   return data
 }
 
+const getFriendlyErrorMessage = (error, fallbackMessage) => {
+  const raw = (error?.message || '').toLowerCase()
+  if (raw.includes('failed to fetch') || raw.includes('networkerror') || raw.includes('load failed')) {
+    return `Backend API not reachable. Set VITE_API_URL correctly and ensure backend is running. Current API: ${apiBase}`
+  }
+  return error?.message || fallbackMessage
+}
+
 export const StoreProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => parseLocal(cartKey, []))
   const [currentUser, setCurrentUser] = useState(() => parseLocal(userKey, null))
@@ -73,7 +81,7 @@ export const StoreProvider = ({ children }) => {
       persistCart(data.items || [])
       return { ok: true }
     } catch (error) {
-      return { ok: false, message: error.message || 'Unable to add cart item on server.' }
+      return { ok: false, message: getFriendlyErrorMessage(error, 'Unable to add cart item on server.') }
     }
   }
 
@@ -97,7 +105,7 @@ export const StoreProvider = ({ children }) => {
       persistCart(data.items || [])
       return { ok: true }
     } catch (error) {
-      return { ok: false, message: error.message || 'Unable to update cart on server.' }
+      return { ok: false, message: getFriendlyErrorMessage(error, 'Unable to update cart on server.') }
     }
   }
 
@@ -115,7 +123,7 @@ export const StoreProvider = ({ children }) => {
       persistCart(data.items || [])
       return { ok: true }
     } catch (error) {
-      return { ok: false, message: error.message || 'Unable to remove cart item on server.' }
+      return { ok: false, message: getFriendlyErrorMessage(error, 'Unable to remove cart item on server.') }
     }
   }
 
@@ -131,7 +139,7 @@ export const StoreProvider = ({ children }) => {
       persistCart([])
       return { ok: true }
     } catch (error) {
-      return { ok: false, message: error.message || 'Unable to clear cart on server.' }
+      return { ok: false, message: getFriendlyErrorMessage(error, 'Unable to clear cart on server.') }
     }
   }
 
@@ -148,7 +156,7 @@ export const StoreProvider = ({ children }) => {
     } catch (error) {
       return {
         ok: false,
-        message: error.message || 'Signup failed. Check backend URL and MongoDB connection.',
+        message: getFriendlyErrorMessage(error, 'Signup failed. Check backend URL and MongoDB connection.'),
       }
     }
   }
@@ -166,7 +174,7 @@ export const StoreProvider = ({ children }) => {
     } catch (error) {
       return {
         ok: false,
-        message: error.message || 'Login failed. Check backend URL and MongoDB connection.',
+        message: getFriendlyErrorMessage(error, 'Login failed. Check backend URL and MongoDB connection.'),
       }
     }
   }
@@ -224,6 +232,7 @@ export const StoreProvider = ({ children }) => {
         signIn,
         login,
         logout,
+        apiBase,
       }}
     >
       {children}

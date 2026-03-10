@@ -932,3 +932,10 @@ img{
         padding-bottom: 12px;
     }
 }
+
+.auth-api-hint{
+    margin-bottom: 14px;
+    font-size: 0.82rem;
+    color: #64748b;
+    word-break: break-all;
+}

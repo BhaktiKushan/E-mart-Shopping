@@ -78,6 +78,17 @@ After signup and adding cart items, check Atlas Data Explorer in database `emart
 - `DELETE /api/cart/:userId/item/:key`
 - `DELETE /api/cart/:userId/clear`
 
+
+### Deploy fix for `Failed to fetch` on `/auth`
+If signup/login shows `Failed to fetch`, your frontend cannot reach backend API.
+
+For Netlify/Vercel frontend, set environment variable:
+- `VITE_API_URL=https://<your-backend-domain>/api`
+
+Then redeploy frontend.
+
+Also ensure backend allows CORS and is running with valid MongoDB env values.
+
 ## Deploy notes
 
 - `vercel.json` and `netlify.toml` are included for SPA routing.
